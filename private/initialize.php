@@ -6,7 +6,11 @@ ob_start();
 
 // Enable sessions
 // TODO add configurations
-session_start();
+session_start([
+    'use_only_cookies' => 1,
+    'cookie_lifetime' => 60 * 60 * 24 * 1, // 1 day,
+    'cookie_httponly' => 1
+  ]);
 
 // Turns off any browser built-in XSS protections
 // LEAVE THIS LINE IN WHILE YOU ARE LEARNING
@@ -34,5 +38,22 @@ require_once('auth_functions.php');
 require_once('csrf_functions.php');
 
 $db = db_connect();
+
+$cur_url = $_SERVER['SCRIPT_NAME'];
+$url_array=explode("/",$cur_url);
+
+
+
+$sensetive_url = "/public/staff/";
+$login_page = $sensetive_url."login.php";
+
+// check if sensitive page
+if($url_array[1]=="public" && $url_array[2]=="staff"){
+	
+	// check if login page
+	if($url_array[3]!="login.php"){
+		require_login();
+	}
+} 
 
 ?>
