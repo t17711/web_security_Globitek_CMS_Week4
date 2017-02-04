@@ -12,21 +12,26 @@ $user = db_fetch_assoc($users_result);
 $errors = array();
 
 if(is_post_request()) {
+  if(csrf_token_is_valid()) {
+      // Confirm that values are present before accessing them.
+      if(isset($_POST['first_name'])) { $user['first_name'] = $_POST['first_name']; }
+      if(isset($_POST['last_name'])) { $user['last_name'] = $_POST['last_name']; }
+      if(isset($_POST['username'])) { $user['username'] = $_POST['username']; }
+      if(isset($_POST['email'])) { $user['email'] = $_POST['email']; }
 
-  // Confirm that values are present before accessing them.
-  if(isset($_POST['first_name'])) { $user['first_name'] = $_POST['first_name']; }
-  if(isset($_POST['last_name'])) { $user['last_name'] = $_POST['last_name']; }
-  if(isset($_POST['username'])) { $user['username'] = $_POST['username']; }
-  if(isset($_POST['email'])) { $user['email'] = $_POST['email']; }
 
-
-  $result = update_user($user);
-  if($result === true) {
-    redirect_to('show.php?id=' . $user['id']);
-  } else {
-    $errors = $result;
+      $result = update_user($user);
+      if($result === true) {
+        redirect_to('show.php?id=' . $user['id']);
+      } else {
+        $errors = $result;
+      }
+  }
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
+
 ?>
 <?php $page_title = 'Staff: Edit User ' . $user['first_name'] . " " . $user['last_name']; ?>
 <?php include(SHARED_PATH . '/staff_header.php'); ?>
@@ -36,7 +41,8 @@ if(is_post_request()) {
 
   <h1>Edit User: <?php echo h($user['first_name']) . " " . h($user['last_name']); ?></h1>
 
-  <?php echo display_errors($errors); ?>
+  
+<?php   echo display_errors($errors);   ?>
 
   <form action="edit.php?id=<?php echo h(u($user['id'])); ?>" method="post">
     First name:<br />
@@ -48,8 +54,9 @@ if(is_post_request()) {
     Email:<br />
     <input type="text" name="email" value="<?php echo h($user['email']); ?>" /><br />
     <br />
-    <input type="submit" name="submit" value="Update"  />
-  </form>
+   <?php echo csrf_token_tag();?>
+<input type="submit" name="submit" value="Create"  />
+</form>
 
 </div>
 

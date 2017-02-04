@@ -9,9 +9,14 @@ $users_result = find_user_by_id($_GET['id']);
 $user = db_fetch_assoc($users_result);
 
 if(is_post_request()) {
-  $result = delete_user($user);
-  if($result === true) {
-    redirect_to('index.php');
+  if(csrf_token_is_valid()) {
+    $result = delete_user($user);
+    if($result === true) {
+      redirect_to('index.php');
+    }
+  }
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
 

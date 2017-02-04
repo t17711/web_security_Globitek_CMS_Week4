@@ -1,7 +1,7 @@
 <?php
 require_once('../../../private/initialize.php');
 
-if(!isset($_GET['id'])) {
+if(!isset($_GET['id']) || !request_is_same_domain()) {
   redirect_to('../index.php');
 }
 
@@ -14,17 +14,22 @@ $state = array(
 );
 
 if(is_post_request()) {
+  if(csrf_token_is_valid()) {
 
-  // Confirm that values are present before accessing them.
-  if(isset($_POST['name'])) { $state['name'] = $_POST['name']; }
-  if(isset($_POST['code'])) { $state['code'] = $_POST['code']; }
+    // Confirm that values are present before accessing them.
+    if(isset($_POST['name'])) { $state['name'] = $_POST['name']; }
+    if(isset($_POST['code'])) { $state['code'] = $_POST['code']; }
 
-  $result = insert_state($state);
-  if($result === true) {
-    $new_id = db_insert_id($db);
-    redirect_to('show.php?id=' . $new_id);
-  } else {
-    $errors = $result;
+    $result = insert_state($state);
+    if($result === true) {
+      $new_id = db_insert_id($db);
+      redirect_to('show.php?id=' . $new_id);
+    } else {
+      $errors = $result;
+    }
+  }
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
 ?>
@@ -36,7 +41,7 @@ if(is_post_request()) {
 
   <h1>New State</h1>
 
-  <?php echo display_errors($errors); ?>
+<?php   echo display_errors($errors);   ?>
 
   <form action="new.php?id=<?php echo h($state['country_id']); ?>" method="post">
     Name:<br />
@@ -44,8 +49,9 @@ if(is_post_request()) {
     Code:<br />
     <input type="text" name="code" value="<?php echo h($state['code']); ?>" /><br />
     <br />
-    <input type="submit" name="submit" value="Create"  />
-  </form>
+   <?php echo csrf_token_tag();?>
+<input type="submit" name="submit" value="Create"  />
+</form>
 
 </div>
 

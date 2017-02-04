@@ -8,8 +8,7 @@
 
     session_regenerate_id();
     $_SESSION['user_id']=$user;
-    $_SESSION['last_login'] = time();
-    
+    $_SESSION['last_login'] = time();   
 
     return true;
   }
@@ -67,7 +66,7 @@
 
   // Call require_login() at the top of any page which needs to
   // require a valid login before granting acccess to the page.
-  function require_login() {
+  function require_login() {   
     if(!is_logged_in()) {
       destroy_current_session();
       redirect_to(url_for('/staff/login.php'));

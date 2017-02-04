@@ -4,6 +4,8 @@ require_once('../../../private/initialize.php');
 if(!isset($_GET['id'])) {
   redirect_to('index.php');
 }
+
+
 $countries_result = find_country_by_id($_GET['id']);
 // No loop, only one result
 $country = db_fetch_assoc($countries_result);
@@ -12,18 +14,24 @@ $country = db_fetch_assoc($countries_result);
 $errors = array();
 
 if(is_post_request()) {
+  if(csrf_token_is_valid()) {
 
-  // Confirm that values are present before accessing them.
-  if(isset($_POST['name'])) { $country['name'] = $_POST['name']; }
-  if(isset($_POST['code'])) { $country['code'] = $_POST['code']; }
+    // Confirm that values are present before accessing them.
+    if(isset($_POST['name'])) { $country['name'] = $_POST['name']; }
+    if(isset($_POST['code'])) { $country['code'] = $_POST['code']; }
 
-  $result = update_country($country);
-  if($result === true) {
-    redirect_to('show.php?id=' . $country['id']);
-  } else {
-    $errors = $result;
+    $result = update_country($country);
+    if($result === true) {
+      redirect_to('show.php?id=' . $country['id']);
+    } else {
+      $errors = $result;
+    }
+  }
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
+
 ?>
 <?php $page_title = 'Staff: Edit Country ' . $country['name']; ?>
 <?php include(SHARED_PATH . '/staff_header.php'); ?>
@@ -33,7 +41,8 @@ if(is_post_request()) {
 
   <h1>Edit Country: <?php echo h($country['name']); ?></h1>
 
-  <?php echo display_errors($errors); ?>
+  
+<?php   echo display_errors($errors);   ?>
 
   <form action="edit.php?id=<?php echo h(u($country['id'])); ?>" method="post">
     Name:<br />
@@ -41,8 +50,9 @@ if(is_post_request()) {
     Code:<br />
     <input type="text" name="code" value="<?php echo h($country['code']); ?>" /><br />
     <br />
-    <input type="submit" name="submit" value="Update"  />
-  </form>
+    <?php echo csrf_token_tag();?>
+    <input type="submit" name="submit" value="Create"  />
+</form>
 
 </div>
 

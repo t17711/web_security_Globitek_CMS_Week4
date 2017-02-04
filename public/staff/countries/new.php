@@ -9,17 +9,22 @@ $country = array(
 );
 
 if(is_post_request()) {
+  if(csrf_token_is_valid()) {
 
-  // Confirm that values are present before accessing them.
-  if(isset($_POST['name'])) { $country['name'] = $_POST['name']; }
-  if(isset($_POST['code'])) { $country['code'] = $_POST['code']; }
+    // Confirm that values are present before accessing them.
+    if(isset($_POST['name'])) { $country['name'] = $_POST['name']; }
+    if(isset($_POST['code'])) { $country['code'] = $_POST['code']; }
 
-  $result = insert_country($country);
-  if($result === true) {
-    $new_id = db_insert_id($db);
-    redirect_to('show.php?id=' . $new_id);
-  } else {
-    $errors = $result;
+    $result = insert_country($country);
+    if($result === true) {
+      $new_id = db_insert_id($db);
+      redirect_to('show.php?id=' . $new_id);
+    } else {
+      $errors = $result;
+    }
+    }
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
 ?>
@@ -31,7 +36,8 @@ if(is_post_request()) {
 
   <h1>New Country</h1>
 
-  <?php echo display_errors($errors); ?>
+  
+<?php   echo display_errors($errors);   ?>
 
   <form action="new.php" method="post">
     Name:<br />
@@ -39,8 +45,9 @@ if(is_post_request()) {
     Code:<br />
     <input type="text" name="code" value="<?php echo h($country['code']); ?>" /><br />
     <br />
+    <?php echo csrf_token_tag();?>
     <input type="submit" name="submit" value="Create"  />
-  </form>
+</form>
 
 </div>
 

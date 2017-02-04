@@ -42,18 +42,14 @@ $db = db_connect();
 $cur_url = $_SERVER['SCRIPT_NAME'];
 $url_array=explode("/",$cur_url);
 
-
-
-$sensetive_url = "/public/staff/";
-$login_page = $sensetive_url."login.php";
-
-// check if sensitive page
-if($url_array[1]=="public" && $url_array[2]=="staff"){
-	
+// check if url is public/staff
+if($url_array[1]=="public" && $url_array[2]=="staff"){	
 	// check if login page
 	if($url_array[3]!="login.php"){
 		require_login();
 	}
-} 
+}
+
+// csrf protection if there is form, forms new.php or edit.php
 
 ?>
