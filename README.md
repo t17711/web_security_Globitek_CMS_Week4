@@ -2,7 +2,7 @@
 
 The input/output sanitization project is a two-week assignment. See Week 2 Assignment for full details.
 
-[x] * Test for vulnerabilities
+- [x] * Test for vulnerabilities
 	* The xss test failed, returned cookie
 	* sqli test failed, browser hanged, returned test failed
 	* Csrf failed
