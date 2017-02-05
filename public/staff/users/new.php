@@ -24,8 +24,13 @@ if(is_post_request()) {
   if($result === true) {
     $new_id = db_insert_id($db);
     redirect_to('show.php?id=' . $new_id);
-  } else {
+  } 
+  else {
     $errors = $result;
+  }
+}
+  else{
+    $errors[] = "Error: invalid request";
   }
 }
 ?>

@@ -26,5 +26,9 @@ The input/output sanitization project is a two-week assignment. See Week 2 Assig
 [x] * Did sqli prevention in login page
 
 
-[x] Bonus
-	* csrf_token_time creates and saved on session so that token older than 10 min is rejected.
+[x] * Bonus
+	* There is security weakness in login page. It tells user if username or password is wrong. It helps dictionary attack.
+	* csrf added tp all forms (new, edit) in staff directory.
+	* csrf_token_time created and saved on session so that token older than 10 min is rejected.
+	* Saved current http user agent to session during login.
+	* Compared server user agent with seccion user agent during check login.

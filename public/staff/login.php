@@ -12,8 +12,6 @@ $username = '';
 $password = '';
 
 if(is_post_request()) {
-  if(csrf_token_is_valid()) {
-
     // Confirm that values are present before accessing them.
     if(isset($_POST['username'])) { $username = $_POST['username']; }
     if(isset($_POST['password'])) { $password = $_POST['password']; }
@@ -47,10 +45,7 @@ if(is_post_request()) {
         $errors[] = "Login failed. "; // TODO write an error message
       }
     }
-  }
-  else{
-    $errors[] = "Error: invalid request";
-  }
+  
 }
 
 ?>
@@ -73,7 +68,6 @@ if(is_post_request()) {
     <input type="text" name="username" value="<?php echo h($username); ?>" /><br />
     Password:<br />
     <input type="password" name="password" value="" /><br />
-     <?php echo csrf_token_tag();?>
     <input type="submit" name="submit" value="Create"  />
   </form>
 

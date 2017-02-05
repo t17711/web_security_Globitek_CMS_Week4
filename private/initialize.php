@@ -9,6 +9,7 @@ ob_start();
 session_start([
     'use_only_cookies' => 1,
     'cookie_lifetime' => 60 * 60 * 24 * 1, // 1 day,
+    'cookie_secure' = 1,
     'cookie_httponly' => 1
   ]);
 
